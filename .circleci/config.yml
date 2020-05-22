@@ -5,7 +5,17 @@ jobs:
       - image: circleci/php:7.3-node-browsers
     steps:
       - checkout
+      #==========ここから追加==========
+      - restore_cache:
+          key: composer-v1-{{ checksum "composer.lock" }}
+      #==========ここまで追加==========
       - run: composer install -n --prefer-dist
+      #==========ここから追加==========
+      - save_cache:
+          key: composer-v1-{{ checksum "composer.lock" }}
+          paths:
+            - vendor
+      #==========ここまで追加==========
       - run: npm ci
       - run: npm run dev
       - run:
